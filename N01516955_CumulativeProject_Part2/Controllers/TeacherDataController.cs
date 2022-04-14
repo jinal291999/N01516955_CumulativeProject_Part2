@@ -4,10 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using MySql.Data.MySqlClient;
 using N01516955_CumulativeProject_Part2.Models;
 using System.Diagnostics;
-
+using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace N01516955_CumulativeProject_Part2.Controllers
 {
@@ -84,14 +84,14 @@ namespace N01516955_CumulativeProject_Part2.Controllers
         /// return a teacher information (including id, firstname, lastname) as weel as teacher's course list 
         /// </returns>
 
-        [HttpGet]
-        [Route("api/TeacherData/FindTeacher/{teacherid}")]
+        //[HttpGet]
+        //[Route("api/TeacherData/FindTeacher/{teacherid}")]
 
-        public TeacherCourse FindTeacher(int teacherid)
-        {
-             //allows to access our database
-        private SchoolDbContext School = new SchoolDbContext();
-
+    //    public TeacherCourse FindTeacher(int teacherid)
+    //    {
+    //         //allows to access our database
+    //    private SchoolDbContext school = new SchoolDbContext();
+    //}
         ///<summary>
         /// Return the list of Teachers
         ///</summary>
@@ -104,53 +104,8 @@ namespace N01516955_CumulativeProject_Part2.Controllers
         ///A list of Teacher object (including id, firstname, lastname)
         ///</return>
 
-        [HttpGet]
-        [Route("api/TeacherData/ListTeachers/{SearchKey?}")]
-        public List<Teacher> ListTeachers(string SearchKey = null)
-        {
-            //create connection
-            MySqlConnection Conn = School.AccessDatabase();
-
-            //open connection
-            Conn.Open();
-
-            //establish a new command
-            MySqlCommand cmd = Conn.CreateCommand();
-
-            //Sql query
-            string Query = "SELECT * FROM teachers";
-
-            if (SearchKey != null)
-            {
-                Query = Query + " WHERE LOWER(teacherfname) = LOWER(@searchkey) OR LOWER(teacherlname) = LOWER(@searchkey)";
-                cmd.Parameters.AddWithValue("@searchkey", SearchKey);
-                cmd.Prepare();
-            }
-            cmd.CommandText = Query;
-
-            //gather result of query into a variable
-            MySqlDataReader SetResult = cmd.ExecuteReader();
-
-            //create an empty list of teachers
-            List<Teacher> Teachers = new List<Teacher> { };
-
-            //loop for the result
-            while (SetResult.Read())
-            {
-                Teacher NewTeacher = new Teacher();
-                NewTeacher.TeacherId = Convert.ToInt32(SetResult["teacherid"]);
-                NewTeacher.TeacherFName = SetResult["teacherfname"].ToString();
-                NewTeacher.TeacherLName = SetResult["teacherlname"].ToString();
-
-
-                Teachers.Add(NewTeacher);
-            }
-
-            //close connection
-            Conn.Close();
-
-            return Teachers;
-        }
+      
+     
 
         /// <summary>
         /// return a teacher information which match the teacher id
